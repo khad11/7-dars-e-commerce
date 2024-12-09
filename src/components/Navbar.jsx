@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import NavbarLinks from "./NavbarLinks";
 
 import { useContext } from "react";
-import { GlobalContext } from "../context/globalContext";
+import { GlobalContext } from "../context/GlobalContext";
 
 function Navbar() {
   const { color, selectedProducts } = useContext(GlobalContext);
