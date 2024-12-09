@@ -1,6 +1,6 @@
 // path: /SingleProduct/:id
 import { useLoaderData } from "react-router-dom";
-import { axiosInstance } from "../utils/AxiosInstance";
+import { axiosInstance } from "../utils/axiosInstance";
 
 export const loader = async ({ params }) => {
   const req = await axiosInstance.get("/products/" + params.id);
