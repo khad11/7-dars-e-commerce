@@ -62,7 +62,7 @@ function Navbar() {
                     />
                   </svg>
                   <span className="badge badge-sm indicator-item">
-                    {selectedProducts}
+                    {selectedProducts.length}
                   </span>
                 </div>
               </div>

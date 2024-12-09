@@ -2,12 +2,10 @@ import { createContext, useEffect, useReducer } from "react";
 
 const dataFromLocalStorage = () => {
   return (
-    JSON.parse(localStorage.getItem("products")) || [
-      {
-        color: "",
-        selectedProducts: [1, 2],
-      },
-    ]
+    JSON.parse(localStorage.getItem("products")) || {
+      color: "",
+      selectedProducts: [1, 2],
+    }
   );
 };
 
@@ -25,19 +23,22 @@ const changeState = (state, action) => {
       return { ...state, color: payload };
   }
 };
-export function GlobalContextProvider({}) {
+export function GlobalContextProvider({ children }) {
   // constni  gullik qavsga orab qoyganim uchun ishlamadi {state, dispatch} !!!!!
-  const [state, dispatch] = useReducer(changeState, dataFromLocalStorage());
+  const [state, dispatch] = useReducer(changeState, {
+    color: "",
+    selectedProducts: [],
+  });
 
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(state));
-  }, [state]);
+  // useEffect(() => {
+  //   localStorage.setItem("products", JSON.stringify(state));
+  // }, [state]);
   // const changeColor = (color) => {
   //   dispatch({ type: "CHANGE_COLOR", payload: color });
   // };
   return (
     <GlobalContext.Provider value={{ ...state, dispatch }}>
-      {}
+      {children}
     </GlobalContext.Provider>
   );
 }
