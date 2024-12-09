@@ -1,4 +1,4 @@
-import { axiosInstance } from "../utils/AxiosInstance";
+import { axiosInstance } from "../utils/axiosInstance";
 
 import ProductContainer from "../components/ProductContainer";
 
