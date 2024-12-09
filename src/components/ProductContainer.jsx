@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router-dom";
 
 import { useContext } from "react";
-import { GlobalContext } from "../context/globalContext";
+import { GlobalContext } from "../context/GlobalContext";
 import { toast } from "react-toastify";
 function ProductContainer() {
   const { dispatch, selectedProducts } = useContext(GlobalContext);
@@ -11,6 +11,7 @@ function ProductContainer() {
 
   const buyProduct = (e, prod) => {
     e.preventDefault();
+    console.log(prod.id);
     const product = selectedProducts.find((product) => prod.id == product.id);
     if (product) {
       toast.warn("already added");
