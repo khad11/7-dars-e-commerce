@@ -1,10 +1,12 @@
 import { createContext, useEffect, useReducer } from "react";
+import { formatPrice } from "../utils";
 
 const dataFromLocalStorage = () => {
   return (
     JSON.parse(localStorage.getItem("products")) || {
       color: "",
-      selectedProducts: [1, 2],
+      selectedProducts: [],
+      totalPrice: 0,
     }
   );
 };
@@ -12,12 +14,33 @@ const dataFromLocalStorage = () => {
 export const GlobalContext = createContext();
 const changeState = (state, action) => {
   const { type, payload } = action;
-  // console.log(action);
+
   switch (type) {
     case "ADD_PRODUCT":
       return {
         ...state,
         selectedProducts: [...state.selectedProducts, payload],
+      };
+    case "CALCULATE":
+      return {
+        ...state,
+        totalPrice: payload,
+      };
+    case "REMOVE_PRODUCT":
+      return {
+        ...state,
+        selectedProducts: payload,
+      };
+    case "CHANGE_AMOUNT":
+      return {
+        ...state,
+        selectedProducts: payload,
+      };
+    case "CALCULATE":
+      return {
+        ...state,
+        totalPrice: payload[1],
+        totalAmount: payload[0],
       };
     case "CHANGE_COLOR":
       return { ...state, color: payload };
@@ -28,16 +51,76 @@ export function GlobalContextProvider({ children }) {
   const [state, dispatch] = useReducer(changeState, {
     color: "",
     selectedProducts: [],
+    totalPrice: 0,
+    totalAmount: 0,
   });
 
-  // useEffect(() => {
-  //   localStorage.setItem("products", JSON.stringify(state));
-  // }, [state]);
-  // const changeColor = (color) => {
-  //   dispatch({ type: "CHANGE_COLOR", payload: color });
-  // };
+  console.log(state);
+
+  // calculate product
+  const calculate = () => {
+    let allPrice = 0;
+    let allAmount = 0;
+
+    if (state.selectedProducts.length) {
+      state.selectedProducts.forEach((product) => {
+        allPrice += product.price * product.amount;
+        allAmount += product.amount;
+      });
+    }
+
+    dispatch({
+      type: "CALCULATE",
+      payload: [allPrice, allAmount],
+    });
+  };
+
+  // addProduct
+  const addProduct = (product) => {
+    dispatch({ type: "ADD_PRODUCT", payload: product });
+    calculate();
+  };
+
+  //  remove  Product
+  const removeProduct = (id) => {
+    const filteredProduct = state.selectedProducts.filter(
+      (product) => product.id !== id
+    );
+    dispatch({ type: "REMOVE_PRODUCT", payload: filteredProduct });
+    calculate();
+  };
+
+  // change  amount
+  const changeAmount = (id, ty) => {
+    if (ty == "increase") {
+      const changedProduct = state.selectedProducts.map((prod) => {
+        if (prod.id == id) {
+          return { ...prod, amount: prod.amount + 1 };
+        } else {
+          return prod;
+        }
+      });
+      dispatch({ type: "CHANGE_AMOUNT", payload: changedProduct });
+    } else if (ty == "decrease") {
+      const changedProduct = state.selectedProducts.map((prod) => {
+        if (prod.id == id) {
+          return { ...prod, amount: prod.amount - 1 };
+        } else {
+          return prod;
+        }
+      });
+      dispatch({ type: "CHANGE_AMOUNT", payload: changedProduct });
+    }
+  };
+
+  useEffect(() => {
+    calculate();
+  }, [state.selectedProducts]);
+
   return (
-    <GlobalContext.Provider value={{ ...state, dispatch }}>
+    <GlobalContext.Provider
+      value={{ ...state, dispatch, removeProduct, addProduct, changeAmount }}
+    >
       {children}
     </GlobalContext.Provider>
   );

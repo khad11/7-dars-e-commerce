@@ -4,20 +4,20 @@ import { useContext } from "react";
 import { GlobalContext } from "../context/GlobalContext";
 import { toast } from "react-toastify";
 function ProductContainer() {
-  const { dispatch, selectedProducts } = useContext(GlobalContext);
-  console.log(selectedProducts);
+  const { selectedProducts, addProduct } = useContext(GlobalContext);
+
   const { products } = useLoaderData();
   // const { color } = useContext(GlobalContext);
 
   const buyProduct = (e, prod) => {
     e.preventDefault();
-    console.log(prod.id);
+
     const product = selectedProducts.find((product) => prod.id == product.id);
     if (product) {
       toast.warn("already added");
       return;
     }
-    dispatch({ type: "ADD_PRODUCT", payload: prod });
+    addProduct({ ...prod, amount: 1 });
   };
 
   return (
