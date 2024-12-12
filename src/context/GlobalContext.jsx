@@ -1,6 +1,10 @@
 import { createContext, useEffect, useReducer } from "react";
 import { formatPrice } from "../utils";
 
+// FIRE BASE
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+
 const dataFromLocalStorage = () => {
   return (
     JSON.parse(localStorage.getItem("products")) || {
@@ -16,6 +20,16 @@ const changeState = (state, action) => {
   const { type, payload } = action;
 
   switch (type) {
+    case "LOGIN":
+      return {
+        ...state,
+        user: payload,
+      };
+    case "AUTH_READY":
+      return {
+        ...state,
+        authReady: true,
+      };
     case "ADD_PRODUCT":
       return {
         ...state,
@@ -40,18 +54,21 @@ const changeState = (state, action) => {
       };
     case "CHANGE_COLOR":
       return { ...state, color: payload };
+    default: {
+      state;
+    }
   }
 };
 export function GlobalContextProvider({ children }) {
   // constni  gullik qavsga orab qoyganim uchun ishlamadi {state, dispatch} !!!!!
   const [state, dispatch] = useReducer(changeState, {
+    user: null,
     color: "",
     selectedProducts: [],
     totalPrice: 0,
     totalAmount: 0,
+    authReady: false,
   });
-
-  console.log(state);
 
   // calculate product
   const calculate = () => {
@@ -108,6 +125,13 @@ export function GlobalContextProvider({ children }) {
       dispatch({ type: "CHANGE_AMOUNT", payload: changedProduct });
     }
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      dispatch({ type: "LOGIN", payload: user });
+      dispatch({ type: "AUTH_READY" });
+    });
+  }, []);
 
   useEffect(() => {
     calculate();

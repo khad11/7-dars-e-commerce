@@ -23,8 +23,11 @@ import {
 import { loader as HomeLoader } from "./pages/Home";
 import { loader as SingleProductLoader } from "./pages/SingleProduct";
 
+// GLOBAL CONTEXT
+import { useGlobalContext } from "./hooks/useGlobalContext";
+
 function App() {
-  const user = true;
+  const { user, authReady } = useGlobalContext();
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -63,11 +66,7 @@ function App() {
       element: user ? <Navigate to="/" /> : <Register />,
     },
   ]);
-  return (
-    <>
-      <RouterProvider router={routes} />
-    </>
-  );
+  return <>{authReady && <RouterProvider router={routes} />}</>;
 }
 
 export default App;
