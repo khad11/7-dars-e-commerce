@@ -21,11 +21,7 @@ const changeState = (state, action) => {
         ...state,
         selectedProducts: [...state.selectedProducts, payload],
       };
-    case "CALCULATE":
-      return {
-        ...state,
-        totalPrice: payload,
-      };
+
     case "REMOVE_PRODUCT":
       return {
         ...state,
@@ -39,8 +35,8 @@ const changeState = (state, action) => {
     case "CALCULATE":
       return {
         ...state,
-        totalPrice: payload[1],
-        totalAmount: payload[0],
+        totalPrice: payload[0],
+        totalAmount: payload[1],
       };
     case "CHANGE_COLOR":
       return { ...state, color: payload };
@@ -71,7 +67,7 @@ export function GlobalContextProvider({ children }) {
 
     dispatch({
       type: "CALCULATE",
-      payload: [allPrice, allAmount],
+      payload: [formatPrice(allPrice), allAmount],
     });
   };
 

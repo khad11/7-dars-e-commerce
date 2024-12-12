@@ -1,5 +1,9 @@
 // rrd import
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 
 // layouts
 import MainLayout from "./layouts/MainLayout";
@@ -20,6 +24,7 @@ import { loader as HomeLoader } from "./pages/Home";
 import { loader as SingleProductLoader } from "./pages/SingleProduct";
 
 function App() {
+  const user = true;
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -47,15 +52,15 @@ function App() {
           path: "/contact",
           element: <Contact />,
         },
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/register",
-          element: <Register />,
-        },
       ],
+    },
+    {
+      path: "/login",
+      element: user ? <Navigate to="/" /> : <Login />,
+    },
+    {
+      path: "/register",
+      element: user ? <Navigate to="/" /> : <Register />,
     },
   ]);
   return (
