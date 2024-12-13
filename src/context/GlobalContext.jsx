@@ -128,6 +128,7 @@ export function GlobalContextProvider({ children }) {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
+      console.log(user);
       dispatch({ type: "LOGIN", payload: user });
       dispatch({ type: "AUTH_READY" });
     });

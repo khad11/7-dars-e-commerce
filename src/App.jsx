@@ -25,13 +25,18 @@ import { loader as SingleProductLoader } from "./pages/SingleProduct";
 
 // GLOBAL CONTEXT
 import { useGlobalContext } from "./hooks/useGlobalContext";
-
+import ProtectedRoutes from "./components/ProtectedRoutes";
 function App() {
   const { user, authReady } = useGlobalContext();
   const routes = createBrowserRouter([
     {
       path: "/",
-      element: <MainLayout />,
+      element: (
+        <ProtectedRoutes user={user}>
+          <MainLayout />
+        </ProtectedRoutes>
+      ),
+
       children: [
         {
           index: true,
